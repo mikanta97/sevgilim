@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Bizim Yerimiz 💕">
+<title>Bizim Yerimiz 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #e8637a;
+    --rose-light: #f5c6cf;
+    --rose-pale: #fdf0f2;
+    --rose-deep: #c94d63;
+    --cream: #fffaf8;
+    --text: #2d1f24;
+    --text-soft: #8a6670;
+    --white: #ffffff;
+    --shadow: 0 8px 32px rgba(232,99,122,0.12);
+    --shadow-card: 0 4px 20px rgba(45,31,36,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(232,99,122,0.1);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    z-index: 100;
+  }
+  .nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: none; border: none; cursor: pointer;
+    padding: 6px 16px; border-radius: 12px;
+    transition: all 0.2s;
+    color: var(--text-soft);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+  }
+  .nav-btn.active { color: var(--rose); }
+  .nav-btn .nav-icon { font-size: 22px; transition: transform 0.2s; }
+  .nav-btn.active .nav-icon { transform: scale(1.15); }
+
+  /* PAGES */
+  .page { display: none; padding: 0 0 100px 0; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* HOME PAGE */
+  .home-header {
+    background: linear-gradient(145deg, #fce4ea 0%, #fff0f3 60%, #fdf5f0 100%);
+    padding: 60px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-header::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(232,99,122,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .home-header::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -40px;
+    width: 150px; height: 150px;
+    background: radial-gradient(circle, rgba(232,99,122,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .couple-names {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--rose);
+    margin-bottom: 4px;
+    position: relative; z-index: 1;
+  }
+  .heart-divider { font-size: 20px; margin: 8px 0; display: block; }
+  .day-counter {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 700;
+    color: var(--rose);
+    line-height: 1;
+    margin: 16px 0 4px;
+    position: relative; z-index: 1;
+    text-shadow: 0 4px 20px rgba(232,99,122,0.2);
+  }
+  .day-label {
+    color: var(--text-soft);
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+  .day-sub {
+    color: var(--text-soft);
+    font-size: 13px;
+    margin-top: 8px;
+    font-style: italic;
+    position: relative; z-index: 1;
+  }
+
+  /* CARDS */
+  .section { padding: 24px 20px 0; }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; color: var(--text);
+  }
+  .see-all {
+    color: var(--rose); font-size: 13px; cursor: pointer;
+    background: none; border: none; font-family: 'DM Sans', sans-serif;
+  }
+
+  .event-card {
+    background: white;
+    border-radius: 18px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-card);
+    display: flex; align-items: center; gap: 14px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .event-icon { font-size: 32px; flex-shrink: 0; }
+  .event-info { flex: 1; }
+  .event-name { font-weight: 500; font-size: 15px; color: var(--text); }
+  .event-date { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+  .event-days {
+    background: var(--rose-pale);
+    color: var(--rose);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* ADD EVENT */
+  .fab {
+    position: fixed; bottom: 80px; right: 20px;
+    width: 56px; height: 56px;
+    background: var(--rose);
+    border-radius: 50%;
+    border: none; cursor: pointer;
+    font-size: 28px; color: white;
+    box-shadow: 0 4px 20px rgba(232,99,122,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 99;
+  }
+  .fab:active { transform: scale(0.92); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(45,31,36,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 200; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 28px 28px 0 0;
+    padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
+    width: 100%; max-width: 480px;
+    animation: slideUp 0.3s ease;
+  }
+  .modal-handle {
+    width: 40px; height: 4px; background: #e0d0d3;
+    border-radius: 2px; margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; margin-bottom: 20px;
+    color: var(--text);
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 12px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
+  .form-input {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid rgba(232,99,122,0.2);
+    border-radius: 14px; font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--rose-pale);
+    color: var(--text); outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--rose); }
+  .emoji-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+    margin-bottom: 16px;
+  }
+  .emoji-btn {
+    font-size: 24px; padding: 8px;
+    border: 1.5px solid transparent;
+    border-radius: 12px; cursor: pointer;
+    background: var(--rose-pale);
+    transition: all 0.15s;
+  }
+  .emoji-btn.selected { border-color: var(--rose); background: white; }
+  .btn-primary {
+    width: 100%; padding: 14px;
+    background: var(--rose);
+    color: white; border: none;
+    border-radius: 16px; font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:active { transform: scale(0.97); }
+
+  /* INFO PAGE */
+  .info-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; padding: 20px;
+  }
+  .info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 18px 16px;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+    animation: fadeUp 0.4s ease both;
+  }
+  .info-card:active { transform: scale(0.96); }
+  .info-card .info-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .info-card .info-label {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--text-soft);
+    margin-bottom: 6px;
+  }
+  .info-card .info-value {
+    font-size: 14px; font-weight: 500; color: var(--text);
+    line-height: 1.4;
+  }
+
+  /* MEMORIES PAGE */
+  .memories-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; padding: 20px;
+  }
+  .memory-card {
+    border-radius: 18px; overflow: hidden;
+    background: white;
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    transition: transform 0.15s;
+    animation: fadeUp 0.4s ease both;
+  }
+  .memory-card:active { transform: scale(0.97); }
+  .memory-img {
+    width: 100%; aspect-ratio: 1;
+    object-fit: cover; display: block;
+    background: var(--rose-pale);
+  }
+  .memory-placeholder {
+    width: 100%; aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--rose-pale), #ffe8ec);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+  }
+  .memory-caption {
+    padding: 10px 12px;
+    font-size: 12px; color: var(--text-soft);
+    font-weight: 500;
+  }
+  .memory-date { font-size: 11px; color: #c0a0a8; margin-top: 2px; }
+
+  /* TIMELINE */
+  .timeline { padding: 20px; }
+  .timeline-item {
+    display: flex; gap: 16px; margin-bottom: 20px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .timeline-left {
+    display: flex; flex-direction: column; align-items: center;
+    width: 48px; flex-shrink: 0;
+  }
+  .timeline-date-box {
+    text-align: center; margin-bottom: 8px;
+  }
+  .timeline-day { font-size: 18px; font-weight: 700; color: var(--rose); line-height: 1; }
+  .timeline-month { font-size: 11px; color: var(--text-soft); text-transform: uppercase; }
+  .timeline-line {
+    width: 2px; flex: 1; min-height: 30px;
+    background: linear-gradient(to bottom, var(--rose-light), transparent);
+  }
+  .timeline-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--rose); margin-top: 8px; flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(232,99,122,0.2);
+  }
+  .timeline-content {
+    flex: 1; background: white; border-radius: 16px;
+    padding: 14px 16px; box-shadow: var(--shadow-card);
+    margin-top: 4px;
+  }
+  .timeline-type { font-size: 11px; color: var(--text-soft); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .timeline-title { font-size: 15px; font-weight: 500; color: var(--text); }
+  .timeline-img {
+    width: 100%; border-radius: 10px; margin-top: 10px;
+    max-height: 160px; object-fit: cover;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    background: linear-gradient(145deg, #fce4ea 0%, #fff0f3 100%);
+    padding: 56px 24px 24px;
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; color: var(--text);
+  }
+  .page-subtitle { font-size: 13px; color: var(--text-soft); margin-top: 4px; }
+
+  /* EDIT INFO MODAL */
+  .info-edit-modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(45,31,36,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 200; align-items: flex-end;
+  }
+  .info-edit-modal.open { display: flex; }
+
+  /* PHOTO INPUT */
+  .photo-input-btn {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed rgba(232,99,122,0.3);
+    border-radius: 16px;
+    background: var(--rose-pale);
+    color: var(--rose);
+    font-size: 15px;
+    cursor: pointer;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 12px;
+  }
+
+  /* SETTINGS / START DATE */
+  .start-banner {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+  }
+  .start-banner p { color: var(--text-soft); font-size: 14px; margin-bottom: 12px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  /* Floating hearts */
+  .floating-heart {
+    position: absolute;
+    animation: floatUp 3s ease-in-out infinite;
+    font-size: 14px; opacity: 0.4; pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 0.4; }
+    100% { transform: translateY(-80px) scale(0.5); opacity: 0; }
+  }
+
+  .empty-state {
+    text-align: center; padding: 40px 20px;
+    color: var(--text-soft);
+  }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; line-height: 1.6; }
+
+  .delete-btn {
+    background: none; border: none; font-size: 16px;
+    cursor: pointer; padding: 4px; opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .delete-btn:active { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="home-header">
+    <div class="floating-heart" style="left:15%;top:30%;animation-delay:0s">💗</div>
+    <div class="floating-heart" style="right:20%;top:40%;animation-delay:1.2s">💕</div>
+    <div class="floating-heart" style="left:40%;top:20%;animation-delay:0.6s">✨</div>
+    <div class="couple-names" id="couple-names-display">Siz & Sevgiliniz</div>
+    <span class="heart-divider">💕</span>
+    <div class="day-counter" id="day-counter">0</div>
+    <div class="day-label">Birlikte Geçen Gün</div>
+    <div class="day-sub" id="start-date-display">Başlangıç tarihinizi ayarlayın</div>
+  </div>
+
+  <div class="start-banner" id="setup-banner" style="display:none">
+    <p>İlişkinizin başlangıç tarihini girin 💕</p>
+    <div class="form-group">
+      <input type="text" class="form-input" id="partner-name-input" placeholder="Sevgilinizin adı">
+    </div>
+    <div class="form-group">
+      <input type="date" class="form-input" id="start-date-input">
+    </div>
+    <button class="btn-primary" onclick="saveSettings()">Kaydet 💕</button>
+  </div>
+
+  <div id="events-section">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Yaklaşan Günler</div>
+        <button class="see-all" onclick="showPage('page-events')">Tümünü Gör</button>
+      </div>
+      <div id="upcoming-events-home"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS PAGE -->
+<div class="page" id="page-events">
+  <div class="page-header">
+    <div class="page-title">📅 Özel Günler</div>
+    <div class="page-subtitle">Birlikte kutlayacağınız anlar</div>
+  </div>
+  <div class="section" style="padding-top:16px">
+    <div id="all-events-list"></div>
+    <div class="empty-state" id="events-empty" style="display:none">
+      <div class="empty-icon">🎉</div>
+      <p>Henüz özel gün eklemediniz.<br>+ butonuna basarak ekleyin!</p>
+    </div>
+  </div>
+</div>
+
+<!-- INFO PAGE -->
+<div class="page" id="page-info">
+  <div class="page-header">
+    <div class="page-title" id="info-page-title">💝 Sevgilim</div>
+    <div class="page-subtitle">Unutmamanız gereken her şey</div>
+  </div>
+  <div class="info-grid" id="info-grid"></div>
+</div>
+
+<!-- MEMORIES PAGE -->
+<div class="page" id="page-memories">
+  <div class="page-header">
+    <div class="page-title">📸 Anılarımız</div>
+    <div class="page-subtitle">Birlikte yaşadığımız güzel anlar</div>
+  </div>
+  <div class="memories-grid" id="memories-grid"></div>
+  <div class="empty-state" id="memories-empty" style="display:none">
+    <div class="empty-icon">📷</div>
+    <p>Henüz anı eklemediniz.<br>+ butonuna basarak fotoğraf ekleyin!</p>
+  </div>
+</div>
+
+<!-- TIMELINE PAGE -->
+<div class="page" id="page-timeline">
+  <div class="page-header">
+    <div class="page-title">⏳ Zaman Tüneli</div>
+    <div class="page-subtitle">Birlikte yazdığınız hikaye</div>
+  </div>
+  <div class="timeline" id="timeline-list"></div>
+  <div class="empty-state" id="timeline-empty" style="display:none">
+    <div class="empty-icon">🌸</div>
+    <p>Henüz bir şey yok.<br>Anı ve özel gün ekledikçe burada görünür!</p>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('page-home')" id="nav-home">
+    <span class="nav-icon">🏠</span>
+    <span>Bugün</span>
+  </button>
+  <button class="nav-btn" onclick="showPage('page-events')" id="nav-events">
+    <span class="nav-icon">🎉</span>
+    <span>Etkinlik</span>
+  </button>
+  <button class="nav-btn" onclick="showPage('page-info')" id="nav-info">
+    <span class="nav-icon">💝</span>
+    <span>Bilgiler</span>
+  </button>
+  <button class="nav-btn" onclick="showPage('page-memories')" id="nav-memories">
+    <span class="nav-icon">📸</span>
+    <span>Anılar</span>
+  </button>
+  <button class="nav-btn" onclick="showPage('page-timeline')" id="nav-timeline">
+    <span class="nav-icon">⏳</span>
+    <span>Zaman</span>
+  </button>
+</nav>
+
+<!-- FAB -->
+<button class="fab" id="fab-btn" onclick="openAddModal()">+</button>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let appData = {
+  partnerName: '',
+  myName: '',
+  startDate: '',
+  events: [],
+  memories: [],
+  info: {
+    flower: 'Henüz girilmedi',
+    coffee: 'Henüz girilmedi',
+    ringSize: 'Henüz girilmedi',
+    notes: 'Henüz girilmedi',
+    dessert: 'Henüz girilmedi',
+    bloodType: 'Henüz girilmedi',
+    food: 'Henüz girilmedi',
+    artist: 'Henüz girilmedi',
+  }
+};
+
+function loadData() {
+  const saved = localStorage.getItem('sevgili-app-v1');
+  if (saved) {
+    try { appData = { ...appData, ...JSON.parse(saved) }; } catch(e) {}
+  }
+}
+
+function saveData() {
+  localStorage.setItem('sevgili-app-v1', JSON.stringify(appData));
+}
+
+// ===== PAGES =====
+const pages = ['page-home','page-events','page-info','page-memories','page-timeline'];
+const navs = ['nav-home','nav-events','nav-info','nav-memories','nav-timeline'];
+
+function showPage(pageId) {
+  pages.forEach((p,i) => {
+    document.getElementById(p).classList.toggle('active', p === pageId);
+    document.getElementById(navs[i]).classList.toggle('active', navs[i] === 'nav-'+pageId.replace('page-',''));
+  });
+  // Update FAB visibility
+  const fabPages = ['page-home','page-events','page-memories','page-timeline'];
+  document.getElementById('fab-btn').style.display = fabPages.includes(pageId) ? 'flex' : 'none';
+  renderCurrentPage(pageId);
+}
+
+function renderCurrentPage(pageId) {
+  if(pageId==='page-home') renderHome();
+  if(pageId==='page-events') renderEvents();
+  if(pageId==='page-info') renderInfo();
+  if(pageId==='page-memories') renderMemories();
+  if(pageId==='page-timeline') renderTimeline();
+}
+
+// ===== HOME =====
+function renderHome() {
+  const counter = document.getElementById('day-counter');
+  const startDisplay = document.getElementById('start-date-display');
+  const namesDisplay = document.getElementById('couple-names-display');
+  const setupBanner = document.getElementById('setup-banner');
+
+  if (!appData.startDate) {
+    setupBanner.style.display = 'block';
+    counter.textContent = '?';
+    return;
+  }
+  setupBanner.style.display = 'none';
+
+  const start = new Date(appData.startDate);
+  const now = new Date();
+  const days = Math.floor((now - start) / (1000*60*60*24));
+  counter.textContent = days;
+
+  const opts = { day:'numeric', month:'long', year:'numeric' };
+  startDisplay.textContent = start.toLocaleDateString('tr-TR', opts) + ' tarihinden beri 💕';
+
+  if (appData.partnerName) {
+    namesDisplay.textContent = (appData.myName || 'Sen') + ' & ' + appData.partnerName;
+    document.getElementById('info-page-title').textContent = '💝 ' + appData.partnerName;
+  }
+
+  renderUpcomingHome();
+}
+
+function saveSettings() {
+  const pName = document.getElementById('partner-name-input').value.trim();
+  const sDate = document.getElementById('start-date-input').value;
+  if (!sDate) return alert('Lütfen başlangıç tarihi girin!');
+  appData.partnerName = pName || 'Sevgilim';
+  appData.startDate = sDate;
+  saveData();
+  renderHome();
+}
+
+function renderUpcomingHome() {
+  const container = document.getElementById('upcoming-events-home');
+  const upcoming = getUpcomingEvents().slice(0,3);
+  if (!upcoming.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><p>Henüz özel gün yok.<br>Eklemek için + butonuna bas!</p></div>';
+    return;
+  }
+  container.innerHTML = upcoming.map(e => eventCardHTML(e)).join('');
+}
+
+function getUpcomingEvents() {
+  const now = new Date();
+  return appData.events.map(e => {
+    const next = getNextOccurrence(e.date);
+    const diff = Math.ceil((next - now) / (1000*60*60*24));
+    return { ...e, daysLeft: diff, nextDate: next };
+  }).sort((a,b) => a.daysLeft - b.daysLeft);
+}
+
+function getNextOccurrence(dateStr) {
+  const now = new Date();
+  const d = new Date(dateStr);
+  const next = new Date(now.getFullYear(), d.getMonth(), d.getDate());
+  if (next < now) next.setFullYear(next.getFullYear()+1);
+  return next;
+}
+
+function eventCardHTML(e) {
+  const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  const d = new Date(e.date);
+  return `<div class="event-card">
+    <div class="event-icon">${e.emoji}</div>
+    <div class="event-info">
+      <div class="event-name">${e.name}</div>
+      <div class="event-date">${d.getDate()} ${months[d.getMonth()]}</div>
+    </div>
+    <div class="event-days">${e.daysLeft} kaldı</div>
+  </div>`;
+}
+
+// ===== EVENTS =====
+function renderEvents() {
+  const container = document.getElementById('all-events-list');
+  const empty = document.getElementById('events-empty');
+  const upcoming = getUpcomingEvents();
+  if (!upcoming.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  container.innerHTML = upcoming.map((e,i) => `
+    <div class="event-card" style="animation-delay:${i*0.06}s">
+      <div class="event-icon">${e.emoji}</div>
+      <div class="event-info">
+        <div class="event-name">${e.name}</div>
+        <div class="event-date">${new Date(e.date).toLocaleDateString('tr-TR',{day:'numeric',month:'long'})}</div>
+      </div>
+      <div class="event-days">${e.daysLeft} gün</div>
+      <button class="delete-btn" onclick="deleteEvent('${e.id}')">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function deleteEvent(id) {
+  if(confirm('Bu etkinliği silmek istiyor musunuz?')) {
+    appData.events = appData.events.filter(e => e.id !== id);
+    saveData(); renderEvents();
+  }
+}
+
+// ===== INFO =====
+const infoFields = [
+  { key:'flower', icon:'🌸', label:'En Sevdiği Çiçek' },
+  { key:'coffee', icon:'☕', label:'Kahve Tercihi' },
+  { key:'ringSize', icon:'💍', label:'Yüzük Ölçüsü' },
+  { key:'notes', icon:'⚠️', label:'Önemli Not' },
+  { key:'dessert', icon:'🍫', label:'Tatlı' },
+  { key:'bloodType', icon:'🩸', label:'Kan Grubu' },
+  { key:'food', icon:'🥗', label:'Yemek' },
+  { key:'artist', icon:'🎨', label:'Sanatçı' },
+];
+
+function renderInfo() {
+  const grid = document.getElementById('info-grid');
+  grid.innerHTML = infoFields.map((f,i) => `
+    <div class="info-card" style="animation-delay:${i*0.05}s" onclick="editInfo('${f.key}')">
+      <span class="info-icon">${f.icon}</span>
+      <div class="info-label">${f.label}</div>
+      <div class="info-value">${appData.info[f.key] || 'Ekle'}</div>
+    </div>
+  `).join('');
+}
+
+function editInfo(key) {
+  const field = infoFields.find(f => f.key === key);
+  const modal = document.getElementById('add-modal');
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-title">${field.icon} ${field.label}</div>
+    <div class="form-group">
+      <label class="form-label">Değer</label>
+      <input type="text" class="form-input" id="info-edit-input" value="${appData.info[key] || ''}" placeholder="Girin...">
+    </div>
+    <button class="btn-primary" onclick="saveInfo('${key}')">Kaydet 💕</button>
+  `;
+  modal.classList.add('open');
+  setTimeout(() => document.getElementById('info-edit-input').focus(), 300);
+}
+
+function saveInfo(key) {
+  const val = document.getElementById('info-edit-input').value.trim();
+  appData.info[key] = val || 'Henüz girilmedi';
+  saveData();
+  closeModal();
+  renderInfo();
+}
+
+// ===== MEMORIES =====
+function renderMemories() {
+  const grid = document.getElementById('memories-grid');
+  const empty = document.getElementById('memories-empty');
+  if (!appData.memories.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = appData.memories.map((m,i) => `
+    <div class="memory-card" style="animation-delay:${i*0.05}s" onclick="viewMemory('${m.id}')">
+      ${m.imageData
+        ? `<img class="memory-img" src="${m.imageData}" alt="${m.caption}">`
+        : `<div class="memory-placeholder">${m.emoji || '📷'}</div>`}
+      <div class="memory-caption">
+        ${m.caption}
+        <div class="memory-date">${formatDate(m.date)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function viewMemory(id) {
+  const m = appData.memories.find(x => x.id === id);
+  if (!m) return;
+  const modal = document.getElementById('add-modal');
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-title">📸 ${m.caption}</div>
+    ${m.imageData ? `<img src="${m.imageData}" style="width:100%;border-radius:16px;margin-bottom:16px">` : ''}
+    <div style="color:var(--text-soft);font-size:14px;margin-bottom:16px">${formatDate(m.date)}</div>
+    ${m.note ? `<p style="font-size:14px;margin-bottom:16px">${m.note}</p>` : ''}
+    <button class="btn-primary" style="background:white;color:var(--rose);border:1.5px solid var(--rose);margin-bottom:8px" onclick="deleteMemory('${m.id}')">🗑️ Sil</button>
+    <button class="btn-primary" onclick="closeModal()">Kapat</button>
+  `;
+  modal.classList.add('open');
+}
+
+function deleteMemory(id) {
+  if(confirm('Bu anıyı silmek istiyor musunuz?')) {
+    appData.memories = appData.memories.filter(m => m.id !== id);
+    saveData(); closeModal(); renderMemories();
+  }
+}
+
+// ===== TIMELINE =====
+function renderTimeline() {
+  const container = document.getElementById('timeline-list');
+  const empty = document.getElementById('timeline-empty');
+
+  const items = [
+    ...appData.memories.map(m => ({ type:'memory', title:m.caption, date:m.date, emoji:'📸', imageData:m.imageData, note:m.note })),
+    ...appData.events.filter(e => {
+      const d = new Date(e.date);
+      return d <= new Date();
+    }).map(e => ({ type:'event', title:e.name, date:e.date, emoji:e.emoji })),
+  ].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  if (!items.length) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  container.innerHTML = items.map((item,i) => {
+    const d = new Date(item.date);
+    return `<div class="timeline-item" style="animation-delay:${i*0.07}s">
+      <div class="timeline-left">
+        <div class="timeline-date-box">
+          <div class="timeline-day">${d.getDate()}</div>
+          <div class="timeline-month">${months[d.getMonth()].substring(0,3)}</div>
+        </div>
+        <div class="timeline-line"></div>
+      </div>
+      <div style="padding-top:0">
+        <div class="timeline-dot"></div>
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-type">${item.type === 'memory' ? '📸 Anı' : '🎉 Etkinlik'}</div>
+        <div class="timeline-title">${item.emoji || ''} ${item.title}</div>
+        ${item.imageData ? `<img class="timeline-img" src="${item.imageData}" alt="${item.title}">` : ''}
+        ${item.note ? `<div style="font-size:13px;color:var(--text-soft);margin-top:6px">${item.note}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== ADD MODAL =====
+const currentPage = () => pages.find(p => document.getElementById(p).classList.contains('active'));
+
+function openAddModal() {
+  const page = currentPage();
+  if(page === 'page-home' || page === 'page-events') openAddEventModal();
+  else if(page === 'page-memories' || page === 'page-timeline') openAddMemoryModal();
+  else if(page === 'page-info') return;
+}
+
+let selectedEmoji = '🎉';
+let selectedMemoryEmoji = '📷';
+let pendingImageData = null;
+
+function openAddEventModal() {
+  const emojis = ['🎂','💍','💕','🎉','✈️','🌸','🎁','🌙','⭐','🏠','🎭','🍽️'];
+  const modal = document.getElementById('add-modal');
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-title">🎉 Özel Gün Ekle</div>
+    <div class="emoji-grid">
+      ${emojis.map(e => `<button class="emoji-btn ${e==='🎉'?'selected':''}" onclick="selectEmoji(this,'${e}')">${e}</button>`).join('')}
+    </div>
+    <div class="form-group">
+      <label class="form-label">Etkinlik Adı</label>
+      <input type="text" class="form-input" id="event-name-input" placeholder="Örn: Doğum Günü">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tarih</label>
+      <input type="date" class="form-input" id="event-date-input">
+    </div>
+    <button class="btn-primary" onclick="saveEvent()">Ekle 💕</button>
+  `;
+  selectedEmoji = '🎉';
+  modal.classList.add('open');
+}
+
+function openAddMemoryModal() {
+  const emojis = ['📷','🌸','💕','⭐','🎉','🌙','✨','🏖️','🎭','🍽️'];
+  const modal = document.getElementById('add-modal');
+  pendingImageData = null;
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-title">📸 Anı Ekle</div>
+    <div class="emoji-grid">
+      ${emojis.map(e => `<button class="emoji-btn ${e==='📷'?'selected':''}" onclick="selectMemoryEmoji(this,'${e}')">${e}</button>`).join('')}
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anı Başlığı</label>
+      <input type="text" class="form-input" id="memory-caption-input" placeholder="Örn: Karla Yürüyüş">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Not (isteğe bağlı)</label>
+      <input type="text" class="form-input" id="memory-note-input" placeholder="Bu anıyla ilgili not...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tarih</label>
+      <input type="date" class="form-input" id="memory-date-input" value="${new Date().toISOString().split('T')[0]}">
+    </div>
+    <label class="photo-input-btn">
+      📷 Fotoğraf Seç
+      <input type="file" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+    </label>
+    <div id="photo-preview" style="margin-bottom:12px"></div>
+    <button class="btn-primary" onclick="saveMemory()">Ekle 💕</button>
+  `;
+  selectedMemoryEmoji = '📷';
+  modal.classList.add('open');
+}
+
+function selectEmoji(btn, emoji) {
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedEmoji = emoji;
+}
+
+function selectMemoryEmoji(btn, emoji) {
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMemoryEmoji = emoji;
+}
+
+function handlePhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    pendingImageData = ev.target.result;
+    document.getElementById('photo-preview').innerHTML =
+      `<img src="${pendingImageData}" style="width:100%;border-radius:12px;max-height:180px;object-fit:cover">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveEvent() {
+  const name = document.getElementById('event-name-input').value.trim();
+  const date = document.getElementById('event-date-input').value;
+  if (!name || !date) return alert('Lütfen tüm alanları doldurun!');
+  appData.events.push({ id: uid(), name, date, emoji: selectedEmoji });
+  saveData(); closeModal(); renderHome(); renderEvents();
+}
+
+function saveMemory() {
+  const caption = document.getElementById('memory-caption-input').value.trim();
+  const date = document.getElementById('memory-date-input').value;
+  const note = document.getElementById('memory-note-input').value.trim();
+  if (!caption) return alert('Lütfen bir başlık girin!');
+  appData.memories.push({
+    id: uid(), caption, date: date || new Date().toISOString().split('T')[0],
+    note, emoji: selectedMemoryEmoji, imageData: pendingImageData
+  });
+  saveData(); closeModal(); renderMemories(); renderTimeline();
+  pendingImageData = null;
+}
+
+function closeModal() {
+  document.getElementById('add-modal').classList.remove('open');
+}
+
+document.getElementById('add-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ===== UTILS =====
+function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric' });
+}
+
+// ===== INIT =====
+loadData();
+renderHome();
+
+// Show setup banner if no start date
+if (!appData.startDate) {
+  document.getElementById('setup-banner').style.display = 'block';
+}
+</script>
+</body>
+</html>
