@@ -880,10 +880,8 @@ function openAddMemoryModal() {
       <label class="form-label">Tarih</label>
       <input type="date" class="form-input" id="memory-date-input" value="${new Date().toISOString().split('T')[0]}">
     </div>
-    <label class="photo-input-btn">
-      📷 Fotoğraf Seç
-      <input type="file" accept="image/*" style="display:none" onchange="handlePhoto(event)">
-    </label>
+    <input type="file" accept="image/*" id="photo-file-input" style="display:none" onchange="handlePhoto(event)">
+    <button class="btn-primary" style="background:var(--rose-pale);color:var(--rose);border:1.5px solid rgba(232,99,122,0.3);margin-bottom:12px" onclick="document.getElementById('photo-file-input').click()">📷 Fotoğraf Seç</button>
     <div id="photo-preview" style="margin-bottom:12px"></div>
     <button class="btn-primary" onclick="saveMemory()">Ekle 💕</button>
   `;
